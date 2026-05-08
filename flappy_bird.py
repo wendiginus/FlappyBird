@@ -44,7 +44,7 @@ over_msg_rect = over_msg.get_rect(center=(GAME_WIDTH/2,GAME_HEIGHT/2-30))
 
 icon = pygame.image.load("images/flappybirdicon.ico")
 
-#game
+#game logic
 bird = Bird(bird_img)
 pipes = []
 velocity_x = -2 #moves pipes to the left (speed)
@@ -60,6 +60,7 @@ with open("high_scores.txt", "r") as f:
     if len(scores) > 0:
         high_score = float(scores[0].strip())
 
+#draws the each frame of the game
 def draw():
     window.blit(background, (0,0))
     window.blit(bird.img, bird) #image, coordinates
@@ -87,6 +88,7 @@ def draw():
         text_render_score = text_font.render(text_str_score, False, "white")
         window.blit(text_render_score, (GAME_WIDTH/2,5))
 
+#moves the bird and the pipes
 def move():
     global velocity_y, score, game_over
 
@@ -118,6 +120,7 @@ def move():
     while len(pipes) > 0 and pipes[0].x < -pipe_width:
         pipes.pop(0)
 
+#makes the pipe at their various positions height-wise
 def create_pipes():
     random_pipe_y = pipe_y - pipe_height/4 - random.random()*(pipe_height/2) #0-h/2
     opening_space = GAME_HEIGHT/4
@@ -139,18 +142,17 @@ pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
 
 create_pipes_timer = pygame.USEREVENT + 0 #max is 9, this is the first event
-pygame.time.set_timer(create_pipes_timer, 1500)
+pygame.time.set_timer(create_pipes_timer, 1500) #every 1.5s two new pipes are created
 
 # audios
-flap_sound = pygame.mixer.Sound("audio/sfx_wing.wav")
-die_sound = pygame.mixer.Sound("audio/sfx_die.wav")
-hit_sound = pygame.mixer.Sound("audio/sfx_hit.wav") #hit the pip
-point_sound = pygame.mixer.Sound("audio/sfx_point.wav")
-
+flap_sound = pygame.mixer.Sound("audio/sfx_wing.wav") #when the bird goes up
+die_sound = pygame.mixer.Sound("audio/sfx_die.wav") #when the bird falls
+hit_sound = pygame.mixer.Sound("audio/sfx_hit.wav") #hit a pipes
+point_sound = pygame.mixer.Sound("audio/sfx_point.wav") #every time the bird passes between the pipes
 
 #game loop
 while True:
-    for event in pygame.event.get():
+    for event in pygame.event.get(): #if the
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
